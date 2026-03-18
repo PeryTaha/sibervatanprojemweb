@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="ng.js"></script>
+    <link href="styla.css" rel="stylesheet" />
+</head>
+<body ng-app="blogApp" ng-controller="detayController">
+
+    
+
+    <div class="kapsayici" style="display: flex; justify-content: center; width: 100%;">
+        <div style="width:70%; " class="kart ,devam">
+            <h1>{{yazi.baslik}}</h1>
+            <div>
+                <p style="font-size: 30px; word-wrap: break-word;">{{yazi.icerik}}</p>
+            </div>
+            <a  style="color: white; font-size: 30px;" href="blog.html">Geri dön</a>
+        </div>
+    </div>
+   
+</body>
+</html>

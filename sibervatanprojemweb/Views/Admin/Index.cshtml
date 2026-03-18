@@ -1,0 +1,67 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="ng.js"></script>
+
+</head>
+<body ng-app="blogApp" ng-controller="blogController">
+    <!----blog ekleme---->
+    <div class="kapsayici">
+        <div class="kart">
+            <h2>Yeni Blog Yazısı Ekle</h2>
+
+            <div class="ayrac">
+                <label>Başlık :</label>
+                <input type="text" ng-model="blogs.baslik" placeholder="Başlık">
+            </div>
+
+            <div class="ayrac">
+                <label>Özet :</label>
+                <input type="text" ng-model="blogs.ozet" placeholder="Özet">
+            </div>
+
+            <div class="ayrac">
+                <label>Etiket :</label>
+                <input type="text" ng-model="blogs.etiket" placeholder="Etiket">
+            </div>
+
+            <div class="ayrac">
+                <label>İçerik :</label>
+                <textarea ng-model="blogs.icerik" placeholder="Yazı içeriği"></textarea>
+            </div>
+
+            <button class="btn" ng-click="blogekle(blogs)">Sitede Yayınla</button>
+        </div>
+    </div>
+    <!----blog ekleme---->
+    <!----blog silme---->
+
+
+    <div class="kapsayici">
+        <div class="kart">
+            <h3>Yayındaki Yazılar</h3>
+            <div class="ayrac" ng-repeat="x in bloglar">
+
+                <span>{{x.baslik}}</span>
+                <span>{{x.etiket}}</span>
+
+                <button class="btn2" ng-click="blogsil(x.id)">Sil</button>
+            </div>
+
+        </div>
+    </div>
+    <!----blog silme---->
+
+</body>
+</html>

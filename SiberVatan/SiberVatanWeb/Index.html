@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="en" ng-app="blogApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="style2.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="ng.js"></script>
+
+    <title>Admin Panel</title>
+</head>
+<body>
+    <div class="arkaplan">
+        <div class="form"  ng-controller="LoginController">
+            <img src="peryy_logo.png" />
+            
+            <h1 id="admin">Admin Giriş</h1>
+
+            <div class="text">
+                <input type="text" ng-model="user.kullaniciadi" placeholder="Kullanıcı Adı">
+            </div>
+            <div class="text">
+                <input type="password" ng-model="user.sifre" placeholder="Şifre">
+            </div>
+
+            <button type="button" class="buton" ng-click="girisYap()">Giriş Yap</button>
+
+        </div>
+    </div>
+
+</body>
+</html>
