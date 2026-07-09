@@ -1,26 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <title>PeryTaha | Yazı Detayı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="styla.css" rel="stylesheet">
+    <script src="angular.min.js"></script>
     <script src="ng.js"></script>
-    <link href="styla.css" rel="stylesheet" />
 </head>
 <body ng-app="blogApp" ng-controller="detayController">
+    <div class="page-frame">
+        <header class="topbar">
+            <nav class="topnav">
+                <a href="indexx.html">Ana Sayfa</a>
+                <a class="active" href="blog.html">Yazılar</a>
+                <a href="iletisim.html">İletişim</a>
+            </nav>
+        </header>
 
-    
-
-    <div class="kapsayici" style="display: flex; justify-content: center; width: 100%;">
-        <div style="width:70%; " class="kart ,devam">
-            <h1>{{yazi.baslik}}</h1>
-            <div>
-                <p style="font-size: 30px; word-wrap: break-word;">{{yazi.icerik}}</p>
-            </div>
-            <a  style="color: white; font-size: 30px;" href="blog.html">Geri dön</a>
-        </div>
+        <main class="workspace article-workspace">
+            <section class="article-shell simple-article">
+                <article class="article-card">
+                    <a class="back-link" href="blog.html"><i class="fa-solid fa-arrow-left"></i> Yazılara dön</a>
+                    <p class="kicker">{{yazi.etiket || 'Yazı detayı'}}</p>
+                    <h1>{{yazi.baslik}}</h1>
+                    <p class="lead article-lead" ng-if="yazi.ozet">{{yazi.ozet}}</p>
+                    <p class="article-content">{{yazi.icerik}}</p>
+                </article>
+            </section>
+        </main>
     </div>
-   
 </body>
 </html>

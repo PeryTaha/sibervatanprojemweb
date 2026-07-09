@@ -1,140 +1,419 @@
+:root {
+    --bg: #0b0d10;
+    --frame: #0f1115;
+    --panel: #15181d;
+    --line: #252a32;
+    --line-soft: #1b2027;
+    --text: #f2f5f7;
+    --muted: #88929f;
+    --faint: #5d6672;
+    --accent: #00f0b5;
+    --blue: #2f80ff;
+    --danger: #ff4d5e;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #0a192f;
-    color: rgb(0, 0, 0);
-    text-align: center;
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #0e0e10;
 }
-.kapsayici{
-    padding-top: 50px;
+
+::selection {
+    color: #07100d;
+    background: var(--accent);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+.admin-frame {
+    width: 100%;
+    min-height: 100vh;
+    background: #0e0e10;
+}
+
+.admin-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
     display: flex;
-    justify-content: center;
-    justify-content: start;
     align-items: center;
-    width: 100%;
-    height: 100vh;
-    flex-direction: column;
-}
-.kart {
-    width: 600px;
-    min-height: 400px; /* En az 400 olsun ama yazı çoksa uzasın */
-    max-height: 600px; /* Çok da uzayıp sayfanın sonuna gitmesin */
-    overflow-y: auto; /* İŞTE SİHİR BU: Yazı çoksa kutu içinde kaydırma çubuğu çıkar */
-    background-color: white;
-    border: solid 5px #000;
-    border-radius: 15px;
-    margin: 50px auto; /* Merkeze almak için auto ekledim */
-    padding: 20px;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 54px;
+    padding: 0 clamp(16px, 4vw, 32px);
+    background: rgba(14, 14, 16, 0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line-soft);
 }
 
-.kart h1{
-        font-size: 40px;
-        color: red;
-        margin-top: 20px;
-    }
-    .kart input {
-        flex: 1;
-        font-size: 18px;
-        color: #000000;
-        border: 2px solid #ccc !important;
-        width: 50%;
-        height: 30px;
-        background-color: white !important;
-        border-radius: 10px;
-    }
-.ayrac {
-    justify-content: space-between align-items: center;
-    margin-bottom: 10px;
-    gap: 10px;
-    width: 100%;
-}
-
-    .ayrac label {
-        width: 100px;
-        font-size: 18px;
-        color: black;
-        font-weight: bold;
-        
-    }
-
-.baslik {
-    width: 200px;
-    font-weight: bold;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.etiket {
-    width: 120px;
-    color: #888;
+.admin-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text);
+    font-family: Consolas, "Courier New", monospace;
     font-size: 14px;
-    margin-left: 20px;
+    font-weight: 900;
 }
-.btn {
-    margin-left: auto !important;
-    padding: 8px 20px;
-    background: #ff4747;
-    color: white;
-    border: none;
-    border-radius: 8px;
+
+.admin-brand::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(0, 240, 181, 0.08);
+}
+
+.admin-topbar nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.admin-topbar a,
+.admin-topbar button {
+    padding: 8px 10px;
+    color: var(--muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-topbar a:hover,
+.admin-topbar button:hover {
+    color: var(--accent);
+}
+
+.admin-layout {
+    display: block;
+    width: min(1440px, 100%);
+    min-height: calc(100vh - 54px);
+    margin: 0 auto;
+}
+
+.kicker {
+    margin: 0 0 14px;
+    color: var(--accent);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.admin-layout.no-rail {
+    display: block;
+}
+
+.admin-workspace {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: clamp(22px, 4vw, 42px) 0;
+}
+
+.admin-heading {
+    max-width: 760px;
+    margin-bottom: 24px;
+}
+
+.admin-heading h1 {
+    margin: 0;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.02;
+}
+
+.admin-heading p:not(.kicker) {
+    color: var(--muted);
+}
+
+.admin-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.admin-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 0 12px;
+    color: var(--muted);
+    background: #101318;
+    border: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-stats strong,
+.admin-stats i {
+    color: var(--accent);
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.admin-card {
+    padding: 22px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+}
+
+.card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.card-head h2 {
+    margin: 0;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 22px;
+}
+
+.card-head i {
+    color: var(--accent);
+}
+
+.field {
+    display: grid;
+    gap: 7px;
+    margin-bottom: 14px;
+}
+
+.field span {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    color: var(--text);
+    background: #0d1014;
+    border: 1px solid var(--line);
+    outline: 0;
+}
+
+.field input {
+    min-height: 40px;
+    padding: 0 12px;
+}
+
+.field textarea {
+    min-height: 158px;
+    padding: 12px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.primary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 42px;
+    color: #07100d;
+    background: var(--accent);
+    border: 0;
+    cursor: pointer;
+    font-weight: 900;
+}
+
+.primary-action:hover {
+    background: #27ffd0;
+}
+
+.form-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.secondary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    font-weight: 900;
+}
+
+.secondary-action:hover {
+    color: #07100d;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.panel-message {
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.list-card {
+    max-height: calc(100vh - 184px);
+    overflow: auto;
+}
+
+.post-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 15px 0;
+    border-top: 1px solid var(--line-soft);
+}
+
+.post-row:first-of-type {
+    border-top: 0;
+}
+
+.post-row span {
+    color: var(--accent);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.post-row h3 {
+    margin: 6px 0;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 17px;
+}
+
+.post-row p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.row-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.row-actions button {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    background: #101318;
+    border: 1px solid var(--line);
     cursor: pointer;
 }
 
-.btn2{
-    cursor: pointer;
-     width: 150px;
-    height: 30px;
-    background-color: #ff0000e9;
-    border: none;
-    color: #081C15;
-    font-size: 18px;
-    border-radius: 10px;
-}
-.text {
-    width: 100%;
-    padding: 10px,20px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    background-color: white;
-    color: black;
-    font-size: 18px;
-    box-sizing: border-box;
-    height:100px;
-}
-.yazi {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 15px 10px;
-    border-bottom: 1px solid #eee !;
-    width: 100%;
-    box-sizing: border-box;
+.row-actions .edit-action {
+    color: var(--accent);
 }
 
-.metin {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.row-actions .edit-action:hover {
+    color: #07100d;
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
-.yazi {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between; 
-    align-items: center;
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+.row-actions .delete-action {
+    color: var(--danger);
+    background: rgba(255, 77, 94, 0.08);
+    border: 1px solid rgba(255, 77, 94, 0.25);
 }
 
-
-.metin {
-    display: flext;
-    flex-direction: row; 
-    gap: 20px;
-    text-align: left;
+.row-actions .delete-action:hover {
+    color: #fff;
+    background: var(--danger);
+    border-color: var(--danger);
 }
 
-.btn2 {
-    margin-left: auto; 
-    min-width: 100px;
+.empty-state {
+    display: grid;
+    place-items: center;
+    min-height: 160px;
+    padding: 20px;
+    color: var(--muted);
+    text-align: center;
+    border: 1px dashed var(--line);
+}
+
+.empty-state i {
+    color: var(--accent);
+    font-size: 28px;
+}
+
+@media (max-width: 900px) {
+    .admin-frame {
+        width: 100%;
+        margin: 0;
+    }
+
+    .admin-topbar,
+    .admin-layout {
+        display: block;
+    }
+
+    .admin-topbar {
+        padding: 14px;
+    }
+
+    .admin-topbar nav {
+        justify-content: flex-start;
+        margin-top: 12px;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .row-actions {
+        justify-content: flex-start;
+    }
+
+    .post-row {
+        grid-template-columns: 1fr;
+    }
+
+    .list-card {
+        max-height: none;
+    }
 }

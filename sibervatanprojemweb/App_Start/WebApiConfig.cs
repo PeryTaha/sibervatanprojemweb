@@ -11,8 +11,7 @@ namespace sibervatanprojemweb
         public static void Register(HttpConfiguration config)
         {
             // Web API yapılandırması ve hizmetler
-            var cors = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(cors);
+            var cors = new EnableCorsAttribute("https://localhost:44330", "*", "*");
             config.EnableCors(cors);
             // Web API yolları
             config.MapHttpAttributeRoutes();

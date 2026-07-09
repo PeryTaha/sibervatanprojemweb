@@ -1,117 +1,129 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Http;
 
 namespace sibervatanprojemweb.Controllers
 {
     public class blogController : ApiController
     {
-        sibervatandbEntities2 _ent = new sibervatandbEntities2();
+        private readonly sibervatandbEntities2 _ent = new sibervatandbEntities2();
 
         [HttpGet]
         public List<blogsayfam> BlogGetir()
         {
-            return _ent.blogsayfam.ToList();
-        }
-        [HttpPost]
-        public List<blogsayfam> BlogGetir2(blogsayfam blog)
-        {
-            try
-            {
-                _ent.blogsayfam.Add(blog);
-                _ent.SaveChanges();
-                return BlogGetir();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return _ent.blogsayfam
+                .OrderByDescending(x => x.id)
+                .ToList();
         }
 
-        [HttpGet]
-        public bool Blogsil(int blogid)
-        {
-            blogsayfam b = _ent.blogsayfam.Find(blogid);
-            if (b != null)
-            {
-                _ent.blogsayfam.Remove(b);
-                _ent.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-
-
-        [HttpPost]
-        public bool BlogEkle(blogsayfam b)
-        {
-            try
-            {
-                _ent.blogsayfam.Add(b);
-                _ent.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-                throw;
-            }
-        }
-        [HttpGet]
-        public List<blogsayfam>blogsil2(int id)
-        {
-            try {
-                blogsayfam b = _ent.blogsayfam.Find(id);
-                if (b != null)
-                {
-                    _ent.blogsayfam.Remove(b);
-                    _ent.SaveChanges();
-
-                }
-                return BlogGetir();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-        [HttpPost]
-        public bool BlogGuncelle(blogsayfam byeni)
-        {
-            blogsayfam blg = _ent.blogsayfam.Find(byeni.id);
-            {
-                try
-                {
-                    blg.baslik = byeni.baslik;
-                    blg.icerik = byeni.icerik;
-                    blg.ozet = byeni.ozet;
-                    _ent.SaveChanges();
-                    return true;
-                }
-                catch (Exception)
-                {
-                    throw; return false;
-
-                }
-
-
-            }
-        }
         [HttpGet]
         public IHttpActionResult BlogDetayGetir(int id)
         {
-            
             var blog = _ent.blogsayfam.Find(id);
-
             if (blog == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             return Ok(blog);
         }
-    }
 
-}  
+        [HttpPost]
+        [AdminAuth]
+        public IHttpActionResult BlogGetir2(blogsayfam blog)
+        {
+            var hata = BlogDogrula(blog);
+            if (hata != null)
+            {
+                return BadRequest(hata);
+            }
+
+            _ent.blogsayfam.Add(blog);
+            _ent.SaveChanges();
+            return Ok(BlogGetir());
+        }
+
+        [HttpPost]
+        [AdminAuth]
+        public IHttpActionResult BlogGuncelle(blogsayfam byeni)
+        {
+            var hata = BlogDogrula(byeni);
+            if (hata != null)
+            {
+                return BadRequest(hata);
+            }
+
+            var blog = _ent.blogsayfam.Find(byeni.id);
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
+            blog.baslik = byeni.baslik.Trim();
+            blog.ozet = byeni.ozet.Trim();
+            blog.etiket = byeni.etiket.Trim();
+            blog.icerik = byeni.icerik.Trim();
+            _ent.SaveChanges();
+
+            return Ok(BlogGetir());
+        }
+
+        [HttpPost]
+        [AdminAuth]
+        public IHttpActionResult blogsil2(int id)
+        {
+            var blog = _ent.blogsayfam.Find(id);
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
+            _ent.blogsayfam.Remove(blog);
+            _ent.SaveChanges();
+            return Ok(BlogGetir());
+        }
+
+        private static string BlogDogrula(blogsayfam blog)
+        {
+            if (blog == null)
+            {
+                return "Yazi verisi bos olamaz.";
+            }
+
+            if (string.IsNullOrWhiteSpace(blog.baslik) ||
+                string.IsNullOrWhiteSpace(blog.ozet) ||
+                string.IsNullOrWhiteSpace(blog.etiket) ||
+                string.IsNullOrWhiteSpace(blog.icerik))
+            {
+                return "Baslik, ozet, etiket ve icerik alanlari zorunludur.";
+            }
+
+            if (blog.baslik.Length > 50)
+            {
+                return "Baslik en fazla 50 karakter olabilir.";
+            }
+
+            if (blog.etiket.Length > 50)
+            {
+                return "Etiket en fazla 50 karakter olabilir.";
+            }
+
+            blog.baslik = blog.baslik.Trim();
+            blog.ozet = blog.ozet.Trim();
+            blog.etiket = blog.etiket.Trim();
+            blog.icerik = blog.icerik.Trim();
+
+            return null;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _ent.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+    }
+}

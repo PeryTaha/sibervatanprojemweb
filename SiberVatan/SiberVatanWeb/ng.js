@@ -1,80 +1,162 @@
 var app = angular.module("blogApp", []);
+var API_BASE = "https://localhost:44364/api";
 
-// ==========================================
-// 1. blog.html (Ana Sayfa Listeleme)
-// ==========================================
+function isManagementPath() {
+    return window.location.pathname.toLowerCase().indexOf("/yonetim-771/") !== -1;
+}
+
+function authConfig() {
+    return {
+        headers: {
+            "X-Admin-Token": localStorage.getItem("adminToken") || ""
+        }
+    };
+}
+
 app.controller("blogController", function($scope, $http) {
-    $http.get("https://localhost:44364/api/blog/BlogGetir").then(function(response) {
-        // HTML'de {{blog.baslik}} yaptığın için artık veriler buraya dolacak
+    $scope.bloglar = [];
+    $scope.yukleniyor = true;
+
+    $http.get(API_BASE + "/blog/BlogGetir").then(function(response) {
         $scope.bloglar = response.data;
+    }).catch(function() {
+        $scope.bloglar = [];
+    }).finally(function() {
+        $scope.yukleniyor = false;
     });
 });
 
-// ==========================================
-// 2. admin.html (Ekleme ve Silme Sayfası)
-// ==========================================
 app.controller("adminController", function($scope, $http, $window) {
-    
-    // Sayfa yüklenince listeyi çek
-    $http.get("https://localhost:44364/api/blog/BlogGetir").then(function(response) {
-        $scope.bloglar = response.data;
-    });
+    if (localStorage.getItem("girisAnahtari") !== "aktif" || !localStorage.getItem("adminToken")) {
+        $window.location.href = "giris.html";
+        return;
+    }
 
-    // BLOG EKLEME (Senin HTML'deki ng-model="blogs.baslik" yapısına göre)
-    $scope.blogs = {}; 
-    $scope.blogekle = function(blogVerisi) {
-        $http.post("https://localhost:44364/api/blog/BlogGetir2", blogVerisi).then(function(response) {
-            $scope.bloglar = response.data; // Listeyi yenile
-            $scope.blogs = {}; // Formu temizle
-        });
-    };
+    $scope.bloglar = [];
+    $scope.blogs = {};
+    $scope.panelMesaj = "";
+    $scope.duzenlemeModu = false;
 
-    // BLOG SİLME (ng-click="blogsil(x.id)")
-    $scope.blogsil = function(id) {
-        $http.get("https://localhost:44364/api/blog/blogsil2?id=" + id).then(function(response) {
+    function bloglariYukle() {
+        $http.get(API_BASE + "/blog/BlogGetir").then(function(response) {
             $scope.bloglar = response.data;
+        }).catch(function() {
+            $scope.panelMesaj = "Blog listesi alınamadı. API veya veritabanı bağlantısını kontrol et.";
+        });
+    }
+
+    function formGecerliMi(blogVerisi) {
+        return blogVerisi &&
+            blogVerisi.baslik &&
+            blogVerisi.ozet &&
+            blogVerisi.etiket &&
+            blogVerisi.icerik;
+    }
+
+    bloglariYukle();
+
+    $scope.blogKaydet = function(blogVerisi) {
+        if (!formGecerliMi(blogVerisi)) {
+            $scope.panelMesaj = "Başlık, özet, etiket ve içerik alanları zorunludur.";
+            return;
+        }
+
+        var istek = $scope.duzenlemeModu
+            ? $http.post(API_BASE + "/blog/BlogGuncelle", blogVerisi, authConfig())
+            : $http.post(API_BASE + "/blog/BlogGetir2", blogVerisi, authConfig());
+
+        var duzenleniyordu = $scope.duzenlemeModu;
+
+        istek.then(function(response) {
+            $scope.bloglar = response.data;
+            $scope.blogs = {};
+            $scope.duzenlemeModu = false;
+            $scope.panelMesaj = duzenleniyordu ? "Yazı güncellendi." : "Yazı başarıyla yayınlandı.";
+        }).catch(function(error) {
+            if (error.status === 401) {
+                localStorage.removeItem("girisAnahtari");
+                localStorage.removeItem("adminToken");
+                $window.location.href = "giris.html";
+                return;
+            }
+
+            $scope.panelMesaj = "İşlem tamamlanamadı. Alanları ve bağlantıyı kontrol et.";
         });
     };
 
-    // Geri dön butonu (ng-click="guvenliCikis()")
+    $scope.blogekle = function(blogVerisi) {
+        $scope.blogKaydet(blogVerisi);
+    };
+
+    $scope.duzenle = function(blog) {
+        $scope.duzenlemeModu = true;
+        $scope.panelMesaj = "Düzenleme modu aktif.";
+        $scope.blogs = angular.copy(blog);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    $scope.duzenlemeyiIptalEt = function() {
+        $scope.duzenlemeModu = false;
+        $scope.blogs = {};
+        $scope.panelMesaj = "";
+    };
+
+    $scope.blogsil = function(id) {
+        $http.post(API_BASE + "/blog/blogsil2?id=" + id, null, authConfig()).then(function(response) {
+            $scope.bloglar = response.data;
+            $scope.panelMesaj = "Yazı silindi.";
+            if ($scope.blogs.id === id) {
+                $scope.duzenlemeyiIptalEt();
+            }
+        }).catch(function(error) {
+            if (error.status === 401) {
+                localStorage.removeItem("girisAnahtari");
+                localStorage.removeItem("adminToken");
+                $window.location.href = "giris.html";
+                return;
+            }
+
+            $scope.panelMesaj = "Yazı silinemedi.";
+        });
+    };
+
     $scope.guvenliCikis = function() {
-        $window.location.href = 'blog.html';
+        localStorage.removeItem("girisAnahtari");
+        localStorage.removeItem("adminToken");
+        $window.location.href = "../blog.html";
     };
 });
 
-// ==========================================
-// 3. indexx.html (Giriş Sayfası)
-// ==========================================
-app.controller('LoginController', function($scope, $http, $window) {
-    $scope.user = {}; 
+app.controller("LoginController", function($scope, $http, $window) {
+    $scope.user = {};
+    $scope.loginMesaj = "";
+
     $scope.girisYap = function() {
-        // Senin HTML'deki user.kullaniciadi ve user.sifre buraya geliyor
-        $http.post('https://localhost:44364/api/login/kontrol', $scope.user)
+        if (!$scope.user.kullaniciadi || !$scope.user.sifre) {
+            $scope.loginMesaj = "Kullanıcı adı ve şifre gerekli.";
+            return;
+        }
+
+        $http.post(API_BASE + "/login/kontrol", $scope.user)
             .then(function(response) {
-                // Giriş başarılıysa anahtarı ver ve SENİN admin sayfana yolla
                 localStorage.setItem("girisAnahtari", "aktif");
-                
-                // DİKKAT: Ekleme yaptığın sayfanın adı 'admin.html' mi 'Index.html' mi? 
-                // Eğer hata alırsan buradaki ismi dosya adınla değiştir kanka.
-                $window.location.href = 'admin.html'; 
+                localStorage.setItem("adminToken", response.data.token);
+                $window.location.href = isManagementPath() ? "panel.html" : "yonetim-771/panel.html";
             })
             .catch(function() {
-                alert("Giriş bilgileri hatalı!");
+                $scope.loginMesaj = "Giriş bilgileri hatalı veya API erişilemiyor.";
             });
     };
 });
 
-// ==========================================
-// 4. devam.html (Detay Sayfası)
-// ==========================================
 app.controller("detayController", function($scope, $http) {
+    $scope.yazi = {};
     var urlParams = new URLSearchParams(window.location.search);
-    var blogId = urlParams.get('id');
+    var blogId = urlParams.get("id");
 
     if (blogId) {
-        $http.get("https://localhost:44364/api/blog/BlogDetayGetir?id=" + blogId).then(function(response) {
-            // Senin HTML'deki {{yazi.baslik}} yapısına göre 'yazi' ismini kullandık
-            $scope.yazi = response.data; 
+        $http.get(API_BASE + "/blog/BlogDetayGetir?id=" + blogId).then(function(response) {
+            $scope.yazi = response.data;
         });
     }
 });

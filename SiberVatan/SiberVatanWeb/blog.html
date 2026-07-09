@@ -1,46 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="styla.css">
+    <title>PeryTaha | Yazılar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-<script src="ng.js"></script>
-    <title>Blog</title>
+    <link rel="stylesheet" href="styla.css">
+    <script src="angular.min.js"></script>
+    <script src="ng.js"></script>
 </head>
 <body ng-app="blogApp" ng-controller="blogController">
-    <!----navbar giris---->
-    <div class="navbar">
-        <ul class="nav justify-content-center color">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="indexx.html">Hakkımda</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="iletisim.html">İletişim</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="blog.html">Blog</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " href="Index.html">Admin</a>
-            </li>
-        </ul>
-    </div>
-    <!----navbar bitis---->
+    <div class="page-frame">
+        <header class="topbar">
+            <nav class="topnav">
+                <a href="indexx.html">Ana Sayfa</a>
+                <a class="active" href="blog.html">Yazılar</a>
+                <a href="iletisim.html">İletişim</a>
+            </nav>
+        </header>
 
-    <br><br><br><br>
-                <div class="kapsayici">
-                    <div class="kart" ng-repeat="blog in bloglar">
-                        <div class="kart-icerik">
-                            <span class="etiket">{{ blog.etiket }}</span>
-                        </div>
-                        <h2>{{ blog.baslik }}</h2>
-                        <p>{{ blog.ozet }}</p>
+        <main class="workspace">
+            <section class="page-title">
+                <p class="kicker">Blog</p>
+                <h1>Yazılarım</h1>
+                <p>Siber güvenlik, ağ teknolojileri ve öğrendiklerim üzerine tuttuğum sade notlar.</p>
+            </section>
 
-                        <a href="devam.html?id={{blog.id}}">Devamını oku -></a>
-                    </div>
+            <section class="archive-toolbar">
+                <div>
+                    <span class="toolbar-label">Yayın sayısı</span>
+                    <strong>{{(bloglar || []).length}}</strong>
                 </div>
+                <label class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" ng-model="arama" placeholder="Yazı ara...">
+                </label>
+            </section>
+
+            <section class="post-grid">
+                <article class="post-card" ng-repeat="blog in bloglar | filter:arama">
+                    <div class="post-meta">
+                        <span class="tag">{{blog.etiket || 'Genel'}}</span>
+                        <span>#{{blog.id}}</span>
+                    </div>
+                    <h2>{{blog.baslik}}</h2>
+                    <p>{{blog.ozet}}</p>
+                    <a href="devam.html?id={{blog.id}}">Devamını oku <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+
+                <div class="empty-state" ng-if="!bloglar || bloglar.length === 0">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <p>Henüz yayınlanmış yazı görünmüyor.</p>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
 </html>

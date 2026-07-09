@@ -1,7 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace sibervatanprojemweb.Controllers
@@ -10,9 +6,7 @@ namespace sibervatanprojemweb.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
-
-            return View();
+            return Redirect("https://localhost:44330/SiberVatanWeb/indexx.html");
         }
     }
 }

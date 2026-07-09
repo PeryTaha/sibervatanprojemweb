@@ -67,7 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SiberVatanWeb\admin.html" />
-    <Content Include="SiberVatanWeb\admin\ng.js" />
     <Content Include="SiberVatanWeb\Index.html" />
     <Content Include="SiberVatanWeb\peryy_logo.png" />
     <Content Include="SiberVatanWeb\style.css" />
@@ -80,6 +79,8 @@
     <Content Include="SiberVatanWeb\profil.jpeg" />
     <Content Include="SiberVatanWeb\styla.css" />
     <Content Include="SiberVatanWeb\style2.css" />
+    <Content Include="SiberVatanWeb\yonetim-771\giris.html" />
+    <Content Include="SiberVatanWeb\yonetim-771\panel.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

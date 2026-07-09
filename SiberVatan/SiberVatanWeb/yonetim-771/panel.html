@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siber Vatan | Yönetim Paneli</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="../style.css" rel="stylesheet">
+    <script src="../angular.min.js"></script>
+    <script src="../ng.js"></script>
+</head>
+<body ng-app="blogApp" ng-controller="adminController">
+    <div class="admin-frame">
+        <header class="admin-topbar">
+            <a class="admin-brand" href="../indexx.html">PeryTaha</a>
+            <nav>
+                <a href="../blog.html">Yazılar</a>
+                <a href="../indexx.html">Site</a>
+                <button type="button" ng-click="guvenliCikis()">Çıkış</button>
+            </nav>
+        </header>
+
+        <main class="admin-workspace">
+            <section class="admin-heading">
+                <p class="kicker">İçerik yönetimi</p>
+                <h1>Yönetim Paneli</h1>
+                <p>Yayın ekleme, metin düzenleme ve kaldırma işlemlerini güvenli yönetim oturumuyla yürüt.</p>
+                <div class="admin-stats">
+                    <span><strong>{{(bloglar || []).length}}</strong> yayın</span>
+                    <span><i class="fa-solid fa-lock"></i> Token korumalı API</span>
+                </div>
+            </section>
+
+            <section class="admin-grid">
+                <form class="admin-card editor-card" name="blogForm" ng-submit="blogKaydet(blogs)" novalidate>
+                    <div class="card-head">
+                        <div>
+                            <p class="kicker">{{duzenlemeModu ? 'Yazı düzenle' : 'Yeni yazı'}}</p>
+                            <h2>{{duzenlemeModu ? 'İçeriği güncelle' : 'Yayın oluştur'}}</h2>
+                        </div>
+                        <i class="fa-solid fa-pen-nib"></i>
+                    </div>
+
+                    <label class="field">
+                        <span>Başlık</span>
+                        <input type="text" ng-model="blogs.baslik" placeholder="Örn. SQL Injection Notları" required>
+                    </label>
+
+                    <label class="field">
+                        <span>Özet</span>
+                        <input type="text" ng-model="blogs.ozet" placeholder="Yazının kısa açıklaması" required>
+                    </label>
+
+                    <label class="field">
+                        <span>Etiket</span>
+                        <input type="text" ng-model="blogs.etiket" placeholder="Web, OSINT, Network" required>
+                    </label>
+
+                    <label class="field">
+                        <span>İçerik</span>
+                        <textarea ng-model="blogs.icerik" placeholder="Yazı içeriğini buraya gir" required></textarea>
+                    </label>
+
+                    <div class="form-actions">
+                        <button class="primary-action" type="submit">
+                            <i class="fa-solid" ng-class="duzenlemeModu ? 'fa-floppy-disk' : 'fa-paper-plane'"></i>
+                            {{duzenlemeModu ? 'Güncelle' : 'Yayınla'}}
+                        </button>
+                        <button class="secondary-action" type="button" ng-if="duzenlemeModu" ng-click="duzenlemeyiIptalEt()">
+                            Vazgeç
+                        </button>
+                    </div>
+                    <p class="panel-message" ng-if="panelMesaj">{{panelMesaj}}</p>
+                </form>
+
+                <section class="admin-card list-card">
+                    <div class="card-head">
+                        <div>
+                            <p class="kicker">Arşiv</p>
+                            <h2>Yayındaki Yazılar</h2>
+                        </div>
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+
+                    <div class="empty-state" ng-if="!bloglar || bloglar.length === 0">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>Henüz yayınlanmış yazı yok.</p>
+                    </div>
+
+                    <article class="post-row" ng-repeat="x in bloglar">
+                        <div>
+                            <span>{{x.etiket || 'Genel'}}</span>
+                            <h3>{{x.baslik}}</h3>
+                            <p>{{x.ozet}}</p>
+                        </div>
+                        <div class="row-actions">
+                            <button type="button" class="edit-action" ng-click="duzenle(x)" title="Yazıyı düzenle">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" class="delete-action" ng-click="blogsil(x.id)" title="Yazıyı sil">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </article>
+                </section>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
